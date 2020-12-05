@@ -2,9 +2,11 @@ package com.zipcodewilmington.streams;
 
 import com.zipcodewilmington.streams.anthropoid.Person;
 import com.zipcodewilmington.streams.anthropoid.PersonFactory;
+import com.zipcodewilmington.streams.tools.MyFunction;
 import com.zipcodewilmington.streams.tools.RandomUtils;
 import com.zipcodewilmington.streams.tools.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,7 +22,10 @@ public class StreamFilter {
      * No arg constructor
      */ //TODO - construct person stream of 100 person objects; startingCharacter is a random capital letter
     public StreamFilter() {
-        this(Stream.empty(), null);
+        this.startingCharacter = String.valueOf(RandomUtils.createCharacter('A','Z'));
+        this.personStream = Stream.generate(PersonFactory::createRandomPerson)
+                .limit(100);
+
     }
 
     /**
@@ -28,7 +33,9 @@ public class StreamFilter {
      * @param startingCharacter - character to filter by
      */ //TODO
     public StreamFilter(Person[] people, Character startingCharacter) {
-        this(Stream.empty(), null);
+        this.startingCharacter = String.valueOf(startingCharacter);
+        this.personStream = Arrays.stream(people)
+                .filter(person -> person.getName().startsWith(this.startingCharacter));
     }
 
     /**
@@ -36,7 +43,10 @@ public class StreamFilter {
      * @param startingCharacter - character to filter by
      */ //TODO
     public StreamFilter(List<Person> people, Character startingCharacter) {
-        this(Stream.empty(), null);
+        this.startingCharacter = String.valueOf(startingCharacter);
+        this.personStream = people.stream()
+                .filter(person -> person.getName().startsWith(this.startingCharacter));
+
     }
 
 
@@ -55,7 +65,13 @@ public class StreamFilter {
      * @return a list of person object whose name starts with `this.startingCharacter`
      */ //TODO
     public List<Person> toListMultiLine() {
-        return null;
+
+        MyFunction function = () -> this.personStream
+                .filter(person -> person.getName().startsWith(this.startingCharacter))
+                .filter(p -> StringUtils.isPalindromeIgnoreCase(p.getName()))
+                .collect(Collectors.toList());
+//        List<Person> people = new ArrayList<Person>(function.apply());
+        return function.apply();
     }
 
 
@@ -64,16 +80,22 @@ public class StreamFilter {
      * @return a list of person objects whose name starts with `this.startingCharacter`
      */ //TODO
     public List<Person> toListOneLine() {
-        return null;
+        return this.personStream
+                .filter(p -> p.getName().startsWith(this.startingCharacter))
+                .filter(p -> StringUtils.isPalindromeIgnoreCase(p.getName()))
+                .collect(Collectors.toList());
     }
-
 
     /**
      * Using one-line lambda syntax
      * @return an array of person object whose name starts with `this.startingCharacter`
      */ //TODO
     public Person[] toArrayOneLine() {
-        return null;
+        return personStream
+                .filter(p -> {
+                    return p.getName().startsWith(this.startingCharacter);
+                }).filter(p -> StringUtils.isPalindromeIgnoreCase(p.getName()))
+                .toArray(Person[]::new);
     }
 
 
@@ -81,8 +103,14 @@ public class StreamFilter {
      * Using multi-line lambda syntax
      * @return an array of person object whose name starts with `this.startingCharacter`
      */ //TODO
+
     public Person[] toArrayMultiLine() {
-        return null;
+
+        return personStream
+                .filter(p -> {
+                    return p.getName().startsWith(this.startingCharacter);
+                }).filter(p -> StringUtils.isPalindromeIgnoreCase(p.getName()))
+                .toArray(Person[]::new);
     }
 
 }

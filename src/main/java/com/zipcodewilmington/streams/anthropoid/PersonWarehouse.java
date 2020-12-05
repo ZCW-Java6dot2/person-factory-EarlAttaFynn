@@ -4,11 +4,12 @@ import com.zipcodewilmington.streams.tools.ReflectionUtils;
 import com.zipcodewilmington.streams.tools.logging.LoggerHandler;
 import com.zipcodewilmington.streams.tools.logging.LoggerWarehouse;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static com.zipcodewilmington.streams.anthropoid.PersonFactory.createRandomPerson;
 
 /**
  * Created by leon on 5/29/17.
@@ -35,7 +36,7 @@ public final class PersonWarehouse {
      * @return list of uniquely named Person objects
      */ //TODO
     public static Stream<Person> getUniquelyNamedPeople() {
-        return null;
+        return Stream.of(createRandomPerson());
     }
 
 
@@ -44,7 +45,8 @@ public final class PersonWarehouse {
      * @return a Stream of respective
      */ //TODO
     public static Stream<Person> getUniquelyNamedPeopleStartingWith(Character character) {
-        return null;
+        return Stream.of(createRandomPerson())
+                .filter(p -> p.getName().startsWith("character"));
     }
 
     /**
@@ -52,14 +54,19 @@ public final class PersonWarehouse {
      * @return a Stream of respective
      */ //TODO
     public static Stream<Person> getFirstNUniquelyNamedPeople(int n) {
-        return null;
+        return IntStream.range(0, n-1)
+                .mapToObj(p -> createRandomPerson());
     }
 
     /**
      * @return a mapping of Person Id to the respective Person name
      */ // TODO
     public static Map<Long, String> getIdToNameMap() {
-        return null;
+//        Map<Long, String> map = new HashMap<>();
+         return IntStream.range(0, 5)
+                .mapToObj(p -> createRandomPerson())
+                 .collect(Collectors.toMap(Person::getPersonalId, Person::getName));
+
     }
 
 
@@ -67,7 +74,17 @@ public final class PersonWarehouse {
      * @return Stream of Stream of Aliases
      */ // TODO
     public static Stream<Stream<String>> getNestedAliases() {
-        return null;
+
+                List<Person> list = IntStream.range(0, 5)
+                        .mapToObj(p -> createRandomPerson())
+                        .collect(Collectors.toList());
+
+        List<Person> people = new ArrayList<>(list);
+
+
+        return people.stream()
+                .map(p -> Arrays.stream(p.getAliases()));
+
     }
 
 
@@ -82,7 +99,15 @@ public final class PersonWarehouse {
      * @return list of names of Person objects
      */ // TODO
     public static List<String> getNames() {
-        return null;
+        List<String> list = IntStream.range(0, 5)
+                .mapToObj(p -> createRandomPerson())
+                .map(Person::getName)
+                .collect(Collectors.toList());
+
+        List<String> people = new ArrayList<>(list);
+
+
+        return people;
     }
 
     /**

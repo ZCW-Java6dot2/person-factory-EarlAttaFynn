@@ -3,9 +3,12 @@ package com.zipcodewilmington.streams.anthropoid;
 import com.zipcodewilmington.streams.tools.RandomUtils;
 import com.zipcodewilmington.streams.tools.StringUtils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -39,7 +42,19 @@ public final class PersonFactory {
      * @return - ArrayList of Person objects
      */ // TODO
     public static List<Person> createPersonList(int listSize) {
-        return null;
+////        Commented out  lines also work as alternative.
+////        List<Person> people = new ArrayList<>();
+//                List<Person> list = IntStream.range(0, listSize)
+//                        .mapToObj(p -> createRandomPerson())
+//                        .collect(Collectors.toList());
+
+//
+//        ArrayList<Person> people = new ArrayList<>(list);
+//
+//
+        return Stream.generate(PersonFactory::createRandomPerson)
+                .limit(listSize)
+                .collect(Collectors.toList());
     }
 
 
@@ -48,7 +63,12 @@ public final class PersonFactory {
      * @return - Array of Person objects
      */ // TODO
     public static Person[] createPersonArray(int arrayLength) {
-        return null;
+        Person[] people =
+        IntStream.range(1, arrayLength)
+                .mapToObj(p -> createRandomPerson())
+                .toArray(Person[]::new);
+        return people;
+
     }
 
 
@@ -58,6 +78,7 @@ public final class PersonFactory {
      * @return - Stream representation of collection of Person objects
      */ // TODO
     public static Stream<Person> createPersonStream(int streamCount) {
-        return null;
+        return IntStream.range(0, streamCount)
+                .mapToObj(p -> createRandomPerson());
     }
 }
